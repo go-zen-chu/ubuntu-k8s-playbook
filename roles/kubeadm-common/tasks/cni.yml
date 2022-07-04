@@ -1,0 +1,20 @@
+# setup cni
+- name: create /opt/cni/bin
+  file:
+    path: /opt/cni/bin
+    state: directory
+    recurse: yes
+  become: True
+
+- name: check if cni plugins already exists
+  stat:
+    path: /opt/cni/bin/bridge
+  register: cni_plugins
+
+- name: download cni plugins if not exists
+  shell:
+    cmd: |
+      CNI_VERSION="v0.8.2"
+      curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | tar -C /opt/cni/bin -xz
+  when: not cni_plugins.stat.exists
+  become: True

@@ -1,0 +1,68 @@
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: enable overlay module
+  command: modprobe overlay
+  become: True
+
+- name: enable br_netfilter module
+  command: modprobe br_netfilter
+  become: True
+
+- name: load kernel module when machine started
+  copy:
+    src: k8s-modules-load.conf
+    dest: /etc/modules-load.d/k8s.conf
+    mode: "0644"
+  become: True
+
+- name: set sysctl params when machine started
+  copy:
+    src: k8s-sysctl.conf
+    dest: /etc/sysctl.d/k8s.conf
+    mode: "0644"
+  become: True
+
+- name: check netfilter option configured as expected
+  shell:
+    cmd: sysctl --system
+  register: sysctl_result
+  failed_when: '"net.bridge.bridge-nf-call-iptables = 1" in sysctl_result.stdout'
+  become: True
+
+- name: set storage driver to overlay
+  lineinfile:
+    dest: /etc/containers/storage.conf
+    regexp: "^driver = \"\""
+    line: "driver = \"overlay\""
+  become: True
+
+- name: run and enable cri-o service
+  systemd:
+    enabled: True
+    state: started
+    name: crio
+  become: True
+
+- name: check netfilter option configured as expected
+  command: crio-status config
+  become: True
+
+# download crictl
+- name: create /usr/local/bin
+  file:
+    path: /usr/local/bin
+    state: directory
+    recurse: yes
+  become: True
+
+- name: check if crictl already exists
+  stat:
+    path: /usr/local/bin/crictl
+  register: crictl
+
+- name: download crictl
+  shell:
+    cmd: |
+      CRICTL_VERSION="v1.23.0"
+      curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | tar -C /usr/local/bin -xz
+  when: not crictl.stat.exists
+  become: True

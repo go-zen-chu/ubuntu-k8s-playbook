@@ -1,0 +1,32 @@
+# setup kubelet
+- name: create /home/ansible/k8s-aur
+  file:
+    path: /home/ansible/k8s-aur
+    state: directory
+    recurse: yes
+
+- name: git clone kubelet
+  git:
+    repo: "https://aur.archlinux.org/kubelet-bin.git"
+    dest: /home/ansible/k8s-aur/kubelet
+    version: afc29d7b # v1.20.5
+
+- name: makepkg kubelet
+  shell:
+    cmd: makepkg --noconfirm -si
+    chdir: /home/ansible/k8s-aur/kubelet
+
+# manual creation required: https://github.com/kubernetes/kubeadm/issues/1345
+- name: create /etc/kubernetes/manifests
+  file:
+    path: /etc/kubernetes/manifests
+    state: directory
+    recurse: yes
+  become: True
+
+- name: enable kubelet service
+  systemd:
+    enabled: True
+    state: started
+    name: kubelet
+  become: True

@@ -6,15 +6,15 @@ all:
       hosts:
         node1:
           ansible_host: ${ANSIBLE_NODE1_ANSIBLE_HOST}
-          ansible_user: root
+          ansible_user: ${ANSIBLE_NODE1_ANSIBLE_USER}
           ansible_port: 22
         node2:
           ansible_host: ${ANSIBLE_NODE2_ANSIBLE_HOST}
-          ansible_user: root
+          ansible_user: ${ANSIBLE_NODE2_ANSIBLE_USER}
           ansible_port: 22
         node3:
           ansible_host: ${ANSIBLE_NODE3_ANSIBLE_HOST}
-          ansible_user: root
+          ansible_user: ${ANSIBLE_NODE3_ANSIBLE_USER}
           ansible_port: 22
     # kubernetes is a group of k8s components
     # below is a sample of components. you can edit and add or delete nodes
@@ -54,5 +54,6 @@ all:
         kubeadm_ca_cert_hash: ${ANSIBLE_KUBEADM_CA_CERT_HASH}
   vars:
     host_ip: ${ANSIBLE_HOST_IP}
+    # this value must be equal to kubernetes children's ansible_port
     sshd_port: ${ANSIBLE_SSHD_PORT}
     password_ansible: ${ANSIBLE_PASSWORD_ANSIBLE}

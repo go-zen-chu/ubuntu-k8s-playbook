@@ -1,0 +1,13 @@
+# setup kubectl
+- name: check if kubectl already exists
+  stat:
+    path: /usr/bin/kubectl
+  register: kubectl
+
+- name: download kubectl if not exists
+  shell:
+    cmd: |
+      KUBECTL_VERSION="v1.20.5"
+      curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+  when: not kubectl.stat.exists
+  become: True

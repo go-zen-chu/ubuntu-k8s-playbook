@@ -1,0 +1,6 @@
+- import_tasks: setup.yml
+- import_tasks: cri-o.yml
+- import_tasks: cni.yml
+- import_tasks: kubectl.yml
+- import_tasks: kubelet.yml
+- import_tasks: kubeadm.yml

@@ -1,0 +1,44 @@
+# setup auth settings
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Make ansible user 
+  user:
+    name: ansible
+    group: wheel
+    # make sure hash your password
+    password: "{{ password_ansible | password_hash('sha512') }}"
+  become: True
+
+- name: Change port of sshd for security
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^Port"
+    line: "Port {{ sshd_port }}"
+
+- name: Allow wheel group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+  become: True
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: restart sshd
+  become: True
+
+# setup ansible user specific configs
+- name: copy bash profile for ansible user
+  copy:
+    src: .bash_profile
+    dest: /home/ansible/
+    group: wheel
+    owner: ansible

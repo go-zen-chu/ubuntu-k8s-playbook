@@ -1,0 +1,15 @@
+- name: git clone kubeadm
+  git:
+    repo: "https://aur.archlinux.org/kubeadm-bin.git"
+    dest: /home/ansible/k8s-aur/kubeadm
+    version: 2305caa # v1.20.5
+
+- name: makepkg kubeadm
+  shell:
+    cmd: makepkg --noconfirm -si
+    chdir: /home/ansible/k8s-aur/kubeadm
+
+- name: try pulling images required for kubernetes via kubeadm
+  shell:
+    cmd: kubeadm config images pull
+  become: True

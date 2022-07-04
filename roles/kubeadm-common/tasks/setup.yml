@@ -1,0 +1,4 @@
+# common setting https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+- name: set swapoff
+  command: swapoff -a
+  become: True
