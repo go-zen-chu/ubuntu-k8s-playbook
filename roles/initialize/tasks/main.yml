@@ -42,3 +42,10 @@
     dest: /home/ansible/
     group: wheel
     owner: ansible
+
+# unzip package required for unarchive module https://docs.ansible.com/ansible/latest/collections/ansible/builtin/unarchive_module.html
+- name: install unzip
+  ansible.builtin.apt:
+    name: unzip=6.0-26ubuntu3
+    state: present
+    update_cache: yes
