@@ -24,7 +24,7 @@ source .envrc
 # envsubst read env vars and substitute them
 envsubst < hosts-template.yml > hosts.yml
 # initialize all node and create ansible user
-ansible-playbook -i hosts.yml --limit node1 initialize.yml
+ansible-playbook -i hosts.yml initialize.yml
 # or you can specify a node you want to setup with --limit option
 ansible-playbook -i hosts.yml --limit node1 initialize.yml
 ```
@@ -35,12 +35,16 @@ ansible-playbook -i hosts.yml --limit node1 initialize.yml
 
 ```bash
 ansible-playbook -i hosts.yml k8s-contol-plane.yml
+# if you want to try for specific node
+ansible-playbook -i hosts.yml --limit control_plane1 k8s-contol-plane.yml
 ```
 
 ## setup worker node
 
 ```bash
 ansible-playbook -i hosts.yml k8s-worker.yml
+# if you want to try for specific node
+ansible-playbook -i hosts.yml --limit worker1 k8s-contol-plane.yml
 ```
 
 ## update kubernetes

@@ -15,6 +15,7 @@
   user:
     name: ansible
     group: wheel
+    shell: /usr/bin/bash
     # make sure hash your password
     password: "{{ password_ansible | password_hash('sha512') }}"
   become: True

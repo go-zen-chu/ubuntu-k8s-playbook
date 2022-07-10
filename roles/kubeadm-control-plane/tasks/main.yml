@@ -1,0 +1,41 @@
+- name: Reset kubeadm
+  shell:
+    cmd: kubeadm reset -f
+  become: True
+
+- name: Start kubernetes control plane
+  shell:
+    cmd: |
+        kubeadm init --control-plane-endpoint={{control_plane_ip}} \
+        --pod-network-cidr=10.244.0.0/16 \
+        --node-name={{kubeadm_control_plane_node_name}} \
+        --cri-socket=unix:///var/run/containerd/containerd.sock
+  register: kubeadm_init_result
+  failed_when: >
+    ("ERROR" in kubeadm_init_result.stdout) or
+    (kubeadm_init_result.rc != 0)
+  become: True
+
+- name: Copy kubectl config to $HOME/.kube
+  shell:
+    cmd: |
+      mkdir -p $HOME/.kube;
+
+- name: Ensure /home/ansible/.kube exists
+  file:
+    path: /home/ansible/.kube
+    state: directory
+    mode: '0755'
+  become: True
+
+- name: Copy kubectl config from kubeadm init result
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ansible/.kube/config
+    owner: ansible
+    group: wheel
+    mode: '0644'
+
+- name: add control-plane taint
+  shell:
+    cmd: kubectl taint nodes {{kubeadm_control_plane_node_name}} node-role.kubernetes.io/control-plane=:NoSchedule
