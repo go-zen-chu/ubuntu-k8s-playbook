@@ -4,32 +4,32 @@ kubernetes cluster build on ubuntu 22.04
 
 ## prerequisite
 
-Programs below should be installed manually on nodes manually before running this playbook.
+Programs below should be installed on nodes.
 
-- sshd: ansible uses ssh for logging into node
+- sshd (OpenSSH): ansible uses ssh for logging into node
 - python3: ansible uses python when running playbook on a node
-- dhcpcd: optional. network connection from ansible origin is required
-
-```bash
-# TBD
-```
 
 ## initialize
 
-After the manual installation above, edit .envrc file from sample.envrc and generate host.yml according to your environment.
+After checking prerequisite above, edit .envrc file from sample.envrc and generate host.yml according to your environment.
 
 ```bash
+cp sample.envrc .envrc
 # edit according to your env
 vim .envrc
 # if you use direnv then run below
 direnv allow .
-# if not run below
+# or if not run below
 source .envrc
 # envsubst read env vars and substitute them
 envsubst < hosts-template.yml > hosts.yml
-# specify a node you want to setup 
+# initialize all node and create ansible user
+ansible-playbook -i hosts.yml --limit node1 initialize.yml
+# or you can specify a node you want to setup with --limit option
 ansible-playbook -i hosts.yml --limit node1 initialize.yml
 ```
+
+**After running initialize playbook successfully, ssh port of target nodes will be changed for security. If you want to run initialize playbook again, make sure to change ssh port (ansible_port) in hosts.yml**
 
 ## setup control plane node
 

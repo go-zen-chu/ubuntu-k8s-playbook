@@ -1,4 +1,10 @@
 # common setting https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
-- name: set swapoff
+- name: Update apt packages list for getting cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+  become: True
+
+- name: Set swapoff
   command: swapoff -a
   become: True

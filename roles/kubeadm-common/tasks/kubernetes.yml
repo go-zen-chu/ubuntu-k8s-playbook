@@ -1,0 +1,32 @@
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+- name: Install required libraries
+  ansible.builtin.apt:
+    pkg:
+    - apt-transport-https=2.4.5
+    - ca-certificates=20211016
+    - curl=7.81.0-1ubuntu1.3
+    state: present
+  become: True
+
+- name: Download the Google Cloud public signing key
+  ansible.builtin.get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+    mode: '0444'
+  become: True
+
+- name: Add kubernetes apt list
+  copy:
+    src: kubernetes.list
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    mode: "0444"
+  become: True
+
+- name: Install commands required in kubernetes
+  ansible.builtin.apt:
+    pkg:
+    - kubeadm=1.24.2
+    - kubelet=1.24.2
+    - kubectl=1.24.2
+    state: present
+  become: True
