@@ -25,7 +25,7 @@
   shell:
     cmd: sysctl --system
   register: sysctl_result
-  failed_when: '"net.bridge.bridge-nf-call-iptables = 1" in sysctl_result.stdout'
+  failed_when: '"net.bridge.bridge-nf-call-iptables = 1" not in sysctl_result.stdout'
   become: True
 
 # install containerd following official installation : https://github.com/containerd/containerd/blob/main/docs/getting-started.md#option-1-from-the-official-binaries
@@ -34,6 +34,13 @@
     src: https://github.com/containerd/containerd/releases/download/v1.6.6/containerd-1.6.6-linux-amd64.tar.gz
     dest: /usr/local
     remote_src: yes
+  become: True
+
+- name: Ensure /usr/local/lib/systemd/system exists
+  file:
+    path: /usr/local/lib/systemd/system
+    state: directory
+    mode: '0755'
   become: True
 
 - name: Download containerd systemctl service file
@@ -46,12 +53,25 @@
 - name: Download runc
   ansible.builtin.get_url:
     url: https://github.com/opencontainers/runc/releases/download/v1.1.3/runc.amd64
-    dest: /usr/local/sbin/runc
+    dest: /tmp/runc.amd64
     mode: '0550'
   become: True
 
 - name: Install runc
-  command: install -m 755 runc.amd64 /usr/local/sbin/runc
+  command: install -m 755 /tmp/runc.amd64 /usr/local/sbin/runc
+  become: True
+
+- name: Remove runc.amd64 file
+  ansible.builtin.file:
+    path: /tmp/runc.amd64
+    state: absent
+  become: True
+
+- name: Ensure /opt/cni/bin exists
+  file:
+    path: /opt/cni/bin
+    state: directory
+    mode: '0755'
   become: True
 
 - name: Download and extract cni plugins
