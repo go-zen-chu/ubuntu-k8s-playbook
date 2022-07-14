@@ -11,15 +11,9 @@
         --node-name={{kubeadm_control_plane_node_name}} \
         --cri-socket=unix:///var/run/containerd/containerd.sock
   register: kubeadm_init_result
-  failed_when: >
-    ("ERROR" in kubeadm_init_result.stdout) or
-    (kubeadm_init_result.rc != 0)
+  failed_when: |
+    ("Your Kubernetes control-plane has initialized successfully" not in kubeadm_init_result.stdout)
   become: True
-
-- name: Copy kubectl config to $HOME/.kube
-  shell:
-    cmd: |
-      mkdir -p $HOME/.kube;
 
 - name: Ensure /home/ansible/.kube exists
   file:
@@ -35,7 +29,10 @@
     owner: ansible
     group: wheel
     mode: '0644'
+    remote_src: yes
+  become: True
 
-- name: add control-plane taint
+# https://github.com/flannel-io/flannel#deploying-flannel-manually
+- name: Apply flannel as kubernetes cni
   shell:
-    cmd: kubectl taint nodes {{kubeadm_control_plane_node_name}} node-role.kubernetes.io/control-plane=:NoSchedule
+    cmd: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/0ef0e29b9e8eee08be9f06c0855cce6aac44de06/Documentation/kube-flannel.yml

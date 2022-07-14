@@ -30,7 +30,7 @@
 
 # unzip package required for unarchive module https://docs.ansible.com/ansible/latest/collections/ansible/builtin/unarchive_module.html
 - name: Install unzip
-  ansible.builtin.apt:
+  apt:
     name: unzip=6.0-26ubuntu3
     state: present
   become: True
