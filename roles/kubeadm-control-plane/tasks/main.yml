@@ -1,0 +1,39 @@
+- name: Reset kubeadm
+  shell:
+    cmd: kubeadm reset -f
+  become: True
+
+- name: Start kubernetes control plane
+  shell:
+    cmd: |
+        kubeadm init --control-plane-endpoint={{control_plane_ip}} \
+        --pod-network-cidr=10.244.0.0/16 \
+        --node-name={{kubeadm_control_plane_node_name}} \
+        --cri-socket=unix:///var/run/containerd/containerd.sock
+  register: kubeadm_init_result
+  failed_when: |
+    ("Your Kubernetes control-plane has initialized successfully" not in kubeadm_init_result.stdout)
+  become: True
+
+- name: Ensure /home/ansible/.kube exists
+  file:
+    path: /home/ansible/.kube
+    state: directory
+    mode: '0755'
+  become: True
+
+- name: Copy kubectl config from kubeadm init result
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ansible/.kube/config
+    owner: ansible
+    group: wheel
+    mode: '0644'
+    remote_src: yes
+  become: True
+
+# TIPS: without CNI, you will get `Network plugin returns error: cni plugin not initialized` log in kubelet's log
+# https://github.com/flannel-io/flannel#deploying-flannel-manually
+- name: Apply flannel as kubernetes cni
+  shell:
+    cmd: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/0ef0e29b9e8eee08be9f06c0855cce6aac44de06/Documentation/kube-flannel.yml

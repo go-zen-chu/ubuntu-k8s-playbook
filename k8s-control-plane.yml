@@ -1,0 +1,4 @@
+- hosts: k8s_control_planes
+  roles:
+    - role: kubeadm-common
+    - role: kubeadm-control-plane

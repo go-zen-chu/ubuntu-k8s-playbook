@@ -1,0 +1,62 @@
+- name: Update apt packages list for getting cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+  become: True
+
+# setup auth settings
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+  become: True
+
+- name: Make ansible user 
+  user:
+    name: ansible
+    group: wheel
+    shell: /usr/bin/bash
+    # make sure hash your password
+    password: "{{ password_ansible | password_hash('sha512') }}"
+  become: True
+
+- name: Copy bash profile for ansible user
+  copy:
+    src: .bash_profile
+    dest: /home/ansible/
+    group: wheel
+    owner: ansible
+  become: True
+
+# unzip package required for unarchive module https://docs.ansible.com/ansible/latest/collections/ansible/builtin/unarchive_module.html
+- name: Install unzip
+  apt:
+    name: unzip=6.0-26ubuntu3
+    state: present
+  become: True
+
+# Update sshd config and restart sshd (ssh port will be changed after these tasks are finished)
+# You CANNOT ssh with default port. initialize playbook finished the role.
+- name: Change port of sshd for security
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^Port"
+    line: "Port {{ sshd_port }}"
+  become: True
+
+- name: Allow wheel group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+  become: True
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: restart sshd
+  become: True
