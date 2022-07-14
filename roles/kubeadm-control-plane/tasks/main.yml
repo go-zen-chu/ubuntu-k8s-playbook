@@ -32,6 +32,7 @@
     remote_src: yes
   become: True
 
+# TIPS: without CNI, you will get `Network plugin returns error: cni plugin not initialized` log in kubelet's log
 # https://github.com/flannel-io/flannel#deploying-flannel-manually
 - name: Apply flannel as kubernetes cni
   shell:
