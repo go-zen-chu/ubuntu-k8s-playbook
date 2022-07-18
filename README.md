@@ -42,6 +42,9 @@ ansible-playbook -i hosts.yml --limit control_plane1 k8s-contol-plane.yml
 ## setup worker node
 
 ```bash
+# run sudo kubeadm token create --print-join-command in control plane node and get latest token & ca-cert
+vim .envrc
+envsubst < hosts-template.yml > hosts.yml
 ansible-playbook -i hosts.yml k8s-worker.yml
 # if you want to try for specific node
 ansible-playbook -i hosts.yml --limit worker1 k8s-contol-plane.yml
