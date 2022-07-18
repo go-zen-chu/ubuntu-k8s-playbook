@@ -58,5 +58,5 @@
     regexp: "^PermitRootLogin"
     line: "PermitRootLogin no"
     state: present
-  notify: restart sshd
+  notify: Restart sshd
   become: True
