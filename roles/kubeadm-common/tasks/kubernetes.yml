@@ -31,3 +31,37 @@
     state: present
     update_cache: True
   become: True
+
+# TIPS: 2022/07/19 - force use cgroup v1 because cgroup v2 & containerd & kubeadm 1.24 may ends up crashing kube-apiserver & etcd
+# cgroup v2 is default after ubuntu 21.10
+- name: Check if cgroup v1 is used
+  shell:
+    cmd: cat /etc/default/grub
+  register: grub_result
+  become: True
+
+- name: Force using cgroup v1 not cgroup v2
+  lineinfile:
+    dest: /etc/default/grub
+    state: present
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT"
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="systemd.unified_cgroup_hierarchy=false"'
+  when: '"systemd.unified_cgroup_hierarchy=false" not in grub_result.stdout'
+  become: True
+
+- name: Update grub 
+  shell:
+    cmd: update-grub
+  when: '"systemd.unified_cgroup_hierarchy=false" not in grub_result.stdout'
+  become: True
+
+- name: Reboot node
+  reboot:
+    reboot_timeout: 300 # 5min
+  when: '"systemd.unified_cgroup_hierarchy=false" not in grub_result.stdout'
+  become: True
+
+- name: Set swapoff
+  command: swapoff -a
+  when: '"systemd.unified_cgroup_hierarchy=false" not in grub_result.stdout'
+  become: True
