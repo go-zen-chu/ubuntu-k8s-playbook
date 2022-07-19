@@ -50,10 +50,17 @@ ansible-playbook -i hosts.yml k8s-worker.yml
 ansible-playbook -i hosts.yml --limit worker1 k8s-contol-plane.yml
 ```
 
+## deploy Argo CD
+
+You can start progressive delivery using your own k8s manifest repository via [Argo CD](https://argo-cd.readthedocs.io/en/stable/).
+
+```bash
+# apply manifest on one node is sufficient
+$ ansible-playbook -i hosts.yml --limit control_plane1 k8s-argocd.yml
+# you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
 ## update kubernetes
 
 //TBD
-
-## what's next?
-
-[Argo CD](https://argo-cd.readthedocs.io/en/stable/) will be also installed in this playbook. You can start progressive delivery using your own k8s manifest repository.

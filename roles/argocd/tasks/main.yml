@@ -1,0 +1,7 @@
+# Enable progressive delivery via argo-cd (not deploying manifest via ansible)
+# https://argo-cd.readthedocs.io/en/stable/#getting-started
+- name: Apply argo-cd manifest
+  shell:
+    cmd: |
+      kubectl create namespace argocd; \
+      kubectl apply  -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
