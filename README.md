@@ -52,8 +52,6 @@ ansible-playbook -i hosts.yml --limit worker1 k8s-contol-plane.yml
 
 ## deploy Argo CD
 
-You can start progressive delivery using your own k8s manifest repository via [Argo CD](https://argo-cd.readthedocs.io/en/stable/).
-
 ```bash
 # apply manifest on one node is sufficient
 $ ansible-playbook -i hosts.yml --limit control_plane1 k8s-argocd.yml
@@ -64,3 +62,9 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ## update kubernetes
 
 //TBD
+
+## what's next?
+
+You can start progressive delivery using your own k8s manifest repository via [Argo CD](https://argo-cd.readthedocs.io/en/stable/).
+
+Please check [6. Create An Application From A Git Repository](https://argo-cd.readthedocs.io/en/stable/getting_started/#6-create-an-application-from-a-git-repository).
