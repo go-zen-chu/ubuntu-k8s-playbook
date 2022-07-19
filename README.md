@@ -57,6 +57,8 @@ You can start progressive delivery using your own k8s manifest repository via [A
 ```bash
 # apply manifest on one node is sufficient
 $ ansible-playbook -i hosts.yml --limit control_plane1 k8s-argocd.yml
+# you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
 ## update kubernetes
