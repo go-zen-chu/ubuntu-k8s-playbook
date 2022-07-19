@@ -1,15 +1,11 @@
 # TIPS: run `sudo kubeadm token create --print-join-command` on control plane and get latest {{kubeadm_token}} & {{kubeadm_ca_cert_hash}}  
 - name: join to kubernetes cluster
   shell:
-<<<<<<< HEAD
     cmd: |
       kubeadm join {{control_plane_ip}}:6443 \
       --token {{kubeadm_token}} --discovery-token-ca-cert-hash {{kubeadm_ca_cert_hash}} \
       --node-name {{kubeadm_worker_node_name}} \
       --cri-socket=unix:///var/run/containerd/containerd.sock
-=======
-    cmd: kubeadm join {{control_plane_ip}}:6443 --token {{kubeadm_token}} --discovery-token-ca-cert-hash {{kubeadm_ca_cert_hash}} --node-name {{kubeadm_worker_node_name}} --cri-socket=unix:///var/run/crio/crio.sock
->>>>>>> origin
   register: kubeadm_join_result
   failed_when:
   - kubeadm_join_result.rc != 0
