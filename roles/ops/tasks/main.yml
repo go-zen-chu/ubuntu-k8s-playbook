@@ -7,7 +7,6 @@
       kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
 
 
-
 # Add argocd vault plugin for secret management
 - name: Apply argo-cd vault plugin manifest
   shell:
