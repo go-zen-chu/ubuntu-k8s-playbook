@@ -1,3 +1,3 @@
 - hosts: k8s_control_planes
   roles:
-    - role: argocd
+    - role: ops

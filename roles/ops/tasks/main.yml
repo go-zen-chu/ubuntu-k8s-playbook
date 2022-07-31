@@ -1,0 +1,18 @@
+# Enable progressive delivery via argo-cd (not deploying manifest via ansible)
+# https://argo-cd.readthedocs.io/en/stable/#getting-started
+- name: Apply argo-cd manifest
+  shell:
+    cmd: |
+      kubectl create namespace argocd; \
+      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
+
+
+
+# Add argocd vault plugin for secret management
+- name: Apply argo-cd vault plugin manifest
+  shell:
+    cmd: |
+      kubectl create namespace argocd-vault-plugin; \
+      kubectl apply -n argocd-vault-plugin -f https://raw.githubusercontent.com/argoproj-labs/argocd-vault-plugin/9f8f17e518a50651804f5b5cdb1c77a14591dccd/manifests/cmp-configmap/argocd-cm.yaml; \
+      kubectl apply -n argocd-vault-plugin -f https://raw.githubusercontent.com/argoproj-labs/argocd-vault-plugin/9f8f17e518a50651804f5b5cdb1c77a14591dccd/manifests/cmp-configmap/argocd-repo-server-deploy.yaml
+

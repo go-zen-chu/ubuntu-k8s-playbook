@@ -50,11 +50,12 @@ ansible-playbook -i hosts.yml k8s-worker.yml
 ansible-playbook -i hosts.yml --limit worker1 k8s-contol-plane.yml
 ```
 
-## deploy Argo CD
+## deploy ops components run on k8s
 
 ```bash
-# apply manifest on one node is sufficient
-$ ansible-playbook -i hosts.yml --limit control_plane1 k8s-argocd.yml
+# apply manifest on one node is enough
+$ ansible-playbook -i hosts.yml --limit control_plane1 k8s-ops.yml
+
 # you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
