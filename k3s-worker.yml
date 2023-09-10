@@ -1,0 +1,3 @@
+- hosts: k8s_workers
+  roles:
+    - role: k3s-worker

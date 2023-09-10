@@ -1,0 +1,3 @@
+- hosts: k8s_control_planes
+  roles:
+    - role: k3s-control-plane
