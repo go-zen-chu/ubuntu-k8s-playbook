@@ -1,0 +1,32 @@
+- name: Check k3s is installed
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary_stats
+  become: True
+
+- name: Install k3s if not installed
+  when: "not k3s_binary_stats.stat.exists"
+  shell:
+    cmd: "curl -sfL https://get.k3s.io | sh -"
+  register: k3s_installation_result
+  failed_when: '"systemd: Starting k3s" not in k3s_installation_result.stdout'
+
+- name: Make sure k3s run as systemd
+  systemd:
+    name: k3s
+    state: started
+    enabled: yes
+
+- name: Fetch latest k3s generated token for k3s-agent
+  fetch:
+    src: /var/lib/rancher/k3s/server/node-token
+    dest: k3s-gen/k3s-node-token-{{ inventory_hostname }}
+    flat: True
+  become: True
+
+- name: Fetch latest k3s generated token for k3s-agent
+  fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: k3s-gen/k3s-{{ inventory_hostname }}.yaml
+    flat: True
+  become: True

@@ -1,0 +1,22 @@
+- name: Get k3s node token from local file
+  set_fact:
+    k3s_node_token: "{{ lookup('file', '../../k3s-gen/k3s-node-token-machine_control_plane1') }}"
+
+- name: Check k3s is installed
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary_stats
+  become: True
+
+- name: Install k3s if not installed
+  #when: "not k3s_binary_stats.stat.exists"
+  shell:
+    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars.machine_control_plane1.ansible_host }}:6443 K3S_TOKEN={{ k3s_node_token }} sh -"
+  register: k3s_installation_result
+  failed_when: '"systemd: Starting k3s" not in k3s_installation_result.stdout'
+
+- name: Make sure k3s run as systemd
+  systemd:
+    name: k3s-agent
+    state: started
+    enabled: yes

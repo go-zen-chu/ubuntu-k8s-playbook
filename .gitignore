@@ -1,3 +1,6 @@
 .envrc
 hosts.yml
 hosts.yaml
+k3s-gen/*
+!k3s-gen/.gitkeep
+k3s-node-token-*
