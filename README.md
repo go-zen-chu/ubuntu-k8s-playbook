@@ -72,25 +72,3 @@ You can start progressive delivery using your own k8s manifest repository via [A
 
 Please check [6. Create An Application From A Git Repository](https://argo-cd.readthedocs.io/en/stable/getting_started/#6-create-an-application-from-a-git-repository).
 
-
-
-## Deprecated: Install k8s via kubeadm
-
-### setup control plane node
-
-```bash
-ansible-playbook -i hosts.yml kubeadm-control-plane.yml
-# if you want to try for specific node
-ansible-playbook -i hosts.yml --limit control_plane1 kubeadm-control-plane.yml
-```
-
-### setup worker node
-
-```bash
-# run sudo kubeadm token create --print-join-command in control plane node and get latest token & ca-cert
-vim .envrc
-envsubst < hosts-template.yml > hosts.yml
-ansible-playbook -i hosts.yml kubeadm-worker.yml
-# if you want to try for specific node
-ansible-playbook -i hosts.yml --limit worker1 kubeadm-worker.yml
-```
