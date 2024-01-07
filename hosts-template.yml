@@ -28,8 +28,6 @@ all:
                   ansible_host: ${ANSIBLE_CONTROL_PLANE1_ANSIBLE_HOST}
                   ansible_user: ansible
                   ansible_port: ${ANSIBLE_CONTROL_PLANE1_ANSIBLE_PORT}
-              vars:
-                kubeadm_control_plane_node_name: control-plane-1
         k8s_workers:
           children:
             worker1:
@@ -38,22 +36,9 @@ all:
                   ansible_host: ${ANSIBLE_WORKER1_ANSIBLE_HOST}
                   ansible_user: ansible
                   ansible_port: ${ANSIBLE_WORKER1_ANSIBLE_PORT}
-              vars:
-                kubeadm_worker_node_name: worker-1
             worker2:
               hosts:
                 machine_worker2:
                   ansible_host: ${ANSIBLE_WORKER2_ANSIBLE_HOST}
                   ansible_user: ansible
                   ansible_port: ${ANSIBLE_WORKER2_ANSIBLE_PORT}
-              vars:
-                kubeadm_worker_node_name: worker-2
-      vars:
-        control_plane_ip: ${ANSIBLE_CONTROL_PLANE1_ANSIBLE_HOST}
-        kubeadm_token: ${ANSIBLE_KUBEADM_TOKEN}
-        kubeadm_ca_cert_hash: ${ANSIBLE_KUBEADM_CA_CERT_HASH}
-  vars:
-    host_ip: ${ANSIBLE_HOST_IP}
-    # this value must be equal to kubernetes children's ansible_port
-    sshd_port: ${ANSIBLE_SSHD_PORT}
-    password_ansible: ${ANSIBLE_PASSWORD_ANSIBLE}
