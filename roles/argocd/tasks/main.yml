@@ -4,4 +4,37 @@
   shell:
     cmd: |
       kubectl create namespace argocd; \
-      kubectl apply  -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
+      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
+
+- name: Check argocd cli installed
+  shell:
+    cmd: /usr/local/bin/argocd version
+  register: argocd_version_result
+  # checking process should be always successful
+  failed_when: False
+
+- name: Download argocd cli
+  get_url:
+    url: https://github.com/argoproj/argo-cd/releases/download/v2.9.3/argocd-linux-amd64
+    dest: /tmp/argocd
+    mode: "0550"
+  when: '"argocd:" not in argocd_version_result.stdout'
+  become: True
+
+- name: Install argocd cli
+  command: install -m 755 /tmp/argocd /usr/local/sbin/runc
+  when: '"argocd:" not in argocd_version_result.stdout'
+  become: True
+
+- name: Remove argocd cli file
+  file:
+    path: /tmp/argocd
+    state: absent
+  when: '"argocd:" not in argocd_version_result.stdout'
+  become: True
+
+- name: Apply argocd-vault-plugin manifest
+  shell:
+    cmd: |
+      kubectl create namespace argocd; \
+      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml

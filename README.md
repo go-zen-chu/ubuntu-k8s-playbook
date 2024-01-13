@@ -64,7 +64,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 ## update kubernetes
 
-//TBD
+Consider installing system-upgrade-controller. ref: [Automated Upgrades \| K3s](https://docs.k3s.io/upgrades/automated)
 
 ## what's next?
 
