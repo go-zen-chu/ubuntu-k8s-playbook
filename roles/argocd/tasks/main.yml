@@ -4,4 +4,17 @@
   shell:
     cmd: |
       kubectl create namespace argocd; \
-      kubectl apply  -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/708906d063cf737f37421c6ac6111b0b1dd5123f/manifests/install.yaml
+      kubectl apply -n argocd -f https://github.com/argoproj/argo-cd/raw/v2.11.3/manifests/install.yaml
+
+# After argocd is instaled configure settings like below to install your kubernetes manifests
+
+#project: default
+#source:
+#  repoURL: 'https://github.com/go-zen-chu/home-k8s.git'
+#  path: overlays/prod
+#  targetRevision: HEAD
+#destination:
+#  server: 'https://kubernetes.default.svc'
+#syncPolicy:
+#  automated:
+#    prune: true
