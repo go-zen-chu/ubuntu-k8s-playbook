@@ -64,7 +64,7 @@
 # Install tailscale
 - name: Check tailscale is installed
   stat:
-    path: /usr/local/bin/tailscale
+    path: /usr/sbin/tailscaled
   register: tailscale_binary_stats
   become: True
 
@@ -73,4 +73,4 @@
   shell:
     cmd: "curl -fsSL https://tailscale.com/install.sh | sh"
   register: tailscale_installation_result
-  failed_when: '"systemd: Starting tailscale" not in k3s_installation_result.stdout'
+  failed_when: '"Log in to start using Tailscale" not in tailscale_installation_result.stdout'
