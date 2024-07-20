@@ -60,3 +60,17 @@
     state: present
   notify: Restart sshd
   become: True
+
+# Install tailscale
+- name: Check tailscale is installed
+  stat:
+    path: /usr/local/bin/tailscale
+  register: tailscale_binary_stats
+  become: True
+
+- name: Install tailscale if not installed
+  when: "not tailscale_binary_stats.stat.exists"
+  shell:
+    cmd: "curl -fsSL https://tailscale.com/install.sh | sh"
+  register: tailscale_installation_result
+  failed_when: '"systemd: Starting tailscale" not in k3s_installation_result.stdout'
