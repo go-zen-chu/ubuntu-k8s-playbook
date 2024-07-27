@@ -1,0 +1,35 @@
+- name: Ensure /home/ansible/k8s exists
+  file:
+    path: /home/ansible/k8s
+    state: directory
+    owner: ansible
+    group: wheel
+    mode: '0755'
+  become: True
+
+- name: Copy manifests
+  copy:
+    src: "manifests"
+    dest: /home/ansible/k8s
+  become: True
+
+# from commit hash: 57605e3390c02a13788510de4dd5d32ef3efd708
+- name: Apply system-upgrade-controller manifest
+  shell:
+    cmd: |
+      kubectl apply -f /home/ansible/k8s/manifests/clusterrole.yaml
+      kubectl apply -f /home/ansible/k8s/manifests/clusterrolebinding.yaml
+      # crd can download from https://github.com/rancher/system-upgrade-controller/releases
+      kubectl apply -f /home/ansible/k8s/manifests/crd.yaml
+      kubectl apply -f /home/ansible/k8s/manifests/system-upgrade-controller.yaml
+
+- name: Copy k8s upgrade plan
+  copy:
+    src: "k8s-upgrade-plan.yaml"
+    dest: /home/ansible/k8s
+  become: True
+
+- name: 
+  shell:
+    cmd: |
+      kubectl apply -f /home/ansible/k8s/k8s-upgrade-plan.yaml

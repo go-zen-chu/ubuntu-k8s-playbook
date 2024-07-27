@@ -1,4 +1,3 @@
-# from commit hash: 57605e3390c02a13788510de4dd5d32ef3efd708
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
