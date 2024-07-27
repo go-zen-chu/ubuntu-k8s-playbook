@@ -1,0 +1,20 @@
+- hosts: inits
+  tags:
+  - initialize
+  roles:
+    - role: initialize
+- hosts: k8s_control_planes
+  tags:
+  - k3s-control-plane
+  roles:
+    - role: k3s-control-plane
+- hosts: k8s_workers
+  tags:
+  - k3s-worker
+  roles:
+    - role: k3s-worker
+- hosts: k8s_control_planes
+  tags:
+  - argocd
+  roles:
+    - role: argocd

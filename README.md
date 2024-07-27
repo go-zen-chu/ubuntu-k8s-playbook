@@ -19,9 +19,9 @@ mage downloadSecretEnvFile
 direnv allow .
 mage generateHostsYaml
 # initialize all node and create ansible user
-ansible-playbook -i hosts.yml initialize.yml
+ansible-playbook -i hosts.yml playbook.yml -t initialize 
 # or you can specify a node you want to setup with --limit option
-ansible-playbook -i hosts.yml --limit node1 initialize.yml
+ansible-playbook -i hosts.yml --limit node1 playbook.yml -t initialize 
 ```
 
 **After running initialize playbook successfully, ssh port of target nodes will be changed for security. If you want to run initialize playbook again, make sure to change ssh port (ansible_port) in hosts.yml**
@@ -31,10 +31,10 @@ ansible-playbook -i hosts.yml --limit node1 initialize.yml
 ### setup control-plane nodes
 
 ```bash
-ansible-playbook -i hosts.yml k3s-control-plane.yml
+ansible-playbook -i hosts.yml playbook.yml -t k3s-control-plane
 
 # if you want to try for specific node
-ansible-playbook -i hosts.yml --limit control_plane1 k3s-control-plane.yml
+ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t k3s-control-plane
 ```
 
 ### setup worker nodes
@@ -44,14 +44,14 @@ ansible-playbook -i hosts.yml --limit control_plane1 k3s-control-plane.yml
 ansible-playbook -i hosts.yml k3s-worker.yml
 
 # if you want to try for specific node
-ansible-playbook -i hosts.yml --limit worker1 k3s-worker.yml
+ansible-playbook -i hosts.yml --limit worker1 playbook.yml -t k3s-worker
 ```
 
 ## deploy Argo CD
 
 ```bash
 # apply manifest on one node is sufficient
-$ ansible-playbook -i hosts.yml --limit control_plane1 k8s-argocd.yml
+$ ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t k8s-argocd
 # you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
