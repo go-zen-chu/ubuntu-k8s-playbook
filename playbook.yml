@@ -18,3 +18,8 @@
   - argocd
   roles:
     - role: argocd
+- hosts: k8s_control_planes
+  tags:
+  - system-upgrade-controller
+  roles:
+    - role: system-upgrade-controller

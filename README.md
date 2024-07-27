@@ -51,14 +51,19 @@ ansible-playbook -i hosts.yml --limit worker1 playbook.yml -t k3s-worker
 
 ```bash
 # apply manifest on one node is sufficient
-$ ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t k8s-argocd
+ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t k8s-argocd
 # you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-## update kubernetes
+## upgrate kubernetes
 
-//TBD
+Upgrading k8s can be done automatically using [system-upgrade-controller](https://docs.k3s.io/upgrades/automated)
+
+```bash
+# apply manifest on one node is sufficient
+ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t system-upgrade-controller
+```
 
 ## what's next?
 
