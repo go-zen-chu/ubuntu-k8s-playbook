@@ -61,6 +61,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 Upgrading k8s can be done automatically using [system-upgrade-controller](https://docs.k3s.io/upgrades/automated)
 
 ```bash
+# apply manifest on one node is sufficient
 ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t system-upgrade-controller
 ```
 
