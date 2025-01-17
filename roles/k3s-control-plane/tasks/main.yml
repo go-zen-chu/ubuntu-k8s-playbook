@@ -7,7 +7,7 @@
 - name: Install k3s if not installed
   when: "not k3s_binary_stats.stat.exists"
   shell:
-    cmd: "curl -sfL https://get.k3s.io | sh -"
+    cmd: "curl -sfL https://get.k3s.io | sh -s - --disable traefik"
   register: k3s_installation_result
   failed_when: '"systemd: Starting k3s" not in k3s_installation_result.stdout'
 
