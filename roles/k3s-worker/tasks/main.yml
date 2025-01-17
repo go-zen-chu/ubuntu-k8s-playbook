@@ -11,7 +11,7 @@
 - name: Install k3s if not installed
   when: "not k3s_binary_stats.stat.exists"
   shell:
-    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars.machine_control_plane1.ansible_host }}:6443 K3S_TOKEN={{ k3s_node_token }} sh -"
+    cmd: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars.machine_control_plane1.ansible_host }}:6443 K3S_TOKEN={{ k3s_node_token }} sh -s - --disable traefik"
   register: k3s_installation_result
   failed_when: '"systemd: Starting k3s" not in k3s_installation_result.stdout'
 
