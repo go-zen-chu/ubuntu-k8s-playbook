@@ -14,6 +14,10 @@ spec:
         operator: In
         values:
           - "true"
+      - key: node.kubernetes.io/unreachable
+        operator: DoesNotExist
+      - key: node.kubernetes.io/not-ready
+        operator: DoesNotExist
   serviceAccountName: system-upgrade
   upgrade:
     image: rancher/k3s-upgrade
@@ -26,11 +30,15 @@ metadata:
   name: agent-plan
   namespace: system-upgrade
 spec:
-  concurrency: 1
+  concurrency: 2
   cordon: true
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane
+        operator: DoesNotExist
+      - key: node.kubernetes.io/unreachable
+        operator: DoesNotExist
+      - key: node.kubernetes.io/not-ready
         operator: DoesNotExist
   prepare:
     args:
