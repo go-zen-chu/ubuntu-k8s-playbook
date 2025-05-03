@@ -47,15 +47,6 @@ ansible-playbook -i hosts.yml k3s-worker.yml
 ansible-playbook -i hosts.yml --limit worker1 playbook.yml -t k3s-worker
 ```
 
-## deploy Argo CD
-
-```bash
-# apply manifest on one node is sufficient
-ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t k8s-argocd
-# you can access to UI via port-forwarding. https://argo-cd.readthedocs.io/en/stable/getting_started/
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-```
-
 ## upgrate kubernetes
 
 Upgrading k8s can be done automatically using [system-upgrade-controller](https://docs.k3s.io/upgrades/automated)
@@ -64,9 +55,3 @@ Upgrading k8s can be done automatically using [system-upgrade-controller](https:
 # apply manifest on one node is sufficient
 ansible-playbook -i hosts.yml --limit control_plane1 playbook.yml -t system-upgrade-controller
 ```
-
-## what's next?
-
-You can start progressive delivery using your own k8s manifest repository via [Argo CD](https://argo-cd.readthedocs.io/en/stable/).
-
-Please check [6. Create An Application From A Git Repository](https://argo-cd.readthedocs.io/en/stable/getting_started/#6-create-an-application-from-a-git-repository).
